@@ -1,0 +1,7 @@
+Contexto.txt
+contexto.txt
+.DS_Store
+Thumbs.db
+node_modules/
+dist/
+.env*
