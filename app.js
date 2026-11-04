@@ -1,91 +1,208 @@
-const progressKey = "trilha-abnt-progress-v1";
-const defaultProgress = { points: 120, lessons: 4, badges: 2, streak: 3, weekly: 2 };
-let progress = { ...defaultProgress };
+const STORAGE_KEY = "trilha-abnt-progress-v1";
 
-try {
-  const saved = JSON.parse(localStorage.getItem(progressKey) || "null");
-  if (saved && typeof saved === "object") progress = { ...defaultProgress, ...saved };
-} catch {
-  // A interface continua funcionando se o navegador bloquear armazenamento local.
-}
-
-function updateProgress() {
-  document.querySelector("#points-count").innerHTML = `${progress.points} <small>pts</small>`;
-  document.querySelector("#lessons-count").innerHTML = `${progress.lessons} <small>lições</small>`;
-  document.querySelector("#badges-count").innerHTML = `${progress.badges} <small>de 8</small>`;
-  document.querySelector("#streak-count").textContent = progress.streak;
-  document.querySelector("#weekly-count").textContent = `${progress.weekly}`;
-  try { localStorage.setItem(progressKey, JSON.stringify(progress)); } catch { /* armazenamento opcional */ }
-}
-
-updateProgress();
-
-const dialog = document.querySelector(".lesson-dialog");
-const feedback = document.querySelector(".quiz-feedback");
-const finishButton = document.querySelector(".finish-button");
-let answeredCorrectly = false;
-let currentLesson = "citacao";
-
-const lessonTitles = {
-  citacao: "Uma citação no lugar certo.",
-  estrutura: "Seu trabalho por dentro.",
-  referencias: "Referências que fazem sentido.",
+const defaultProgress = {
+  completedLessons: [],
+  streakDays: 3,
 };
 
-document.querySelectorAll("[data-lesson]").forEach((button) => {
+const lessonContent = {
+  citacao: {
+    title: "Uma citação no lugar certo.",
+    question: "Qual frase mostra de onde veio a ideia?",
+    answers: [
+      "A leitura ajuda a aprender mais.",
+      "Segundo Silva (2022), a leitura apoia a aprendizagem.",
+      "Todos sabem que a leitura é importante.",
+    ],
+    correctAnswer: 1,
+    correctFeedback: "Isso! O nome e o ano ajudam o leitor a localizar a fonte.",
+    incorrectFeedback: "Procure a frase que identifica a autoria e o ano da ideia.",
+  },
+  estrutura: {
+    title: "Seu trabalho por dentro.",
+    question: "Qual parte apresenta o tema e os objetivos do trabalho?",
+    answers: [
+      "A introdução.",
+      "A lista de referências.",
+      "A folha de aprovação.",
+    ],
+    correctAnswer: 0,
+    correctFeedback: "Isso! A introdução apresenta o assunto e os objetivos.",
+    incorrectFeedback: "Pense na parte que prepara o leitor para o assunto.",
+  },
+  referencias: {
+    title: "Referências que fazem sentido.",
+    question: "O que ajuda a identificar um livro nas referências?",
+    answers: [
+      "A cor da capa e o número de páginas.",
+      "O nome do leitor e a data da leitura.",
+      "A autoria, o título e os dados de publicação.",
+    ],
+    correctAnswer: 2,
+    correctFeedback: "Muito bem! Esses dados ajudam a localizar a obra consultada.",
+    incorrectFeedback: "Escolha os dados que permitem a outra pessoa localizar o livro.",
+  },
+};
+
+function loadProgress() {
+  try {
+    const savedProgress = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+
+    if (!savedProgress || typeof savedProgress !== "object") {
+      return { ...defaultProgress };
+    }
+
+    return {
+      ...defaultProgress,
+      ...savedProgress,
+      completedLessons: Array.isArray(savedProgress.completedLessons)
+        ? savedProgress.completedLessons
+        : [],
+      streakDays: Number(savedProgress.streakDays ?? savedProgress.streak ?? 3),
+    };
+  } catch {
+    return { ...defaultProgress };
+  }
+}
+
+const progress = loadProgress();
+const lessonDialog = document.querySelector("#lesson-dialog");
+const lessonTitle = document.querySelector("#dialog-title");
+const questionLegend = document.querySelector("#quiz-question");
+const answerOptions = document.querySelectorAll(".answer-option");
+const answerFeedback = document.querySelector("#answer-feedback");
+const finishLessonButton = document.querySelector("#finish-lesson-button");
+const announcement = document.querySelector("#announcement");
+
+let activeLessonId = "citacao";
+let selectedAnswerIndex = null;
+let announcementTimeout;
+
+function saveProgress() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  } catch {
+    // O progresso continua disponível durante a sessão se o armazenamento estiver bloqueado.
+  }
+}
+
+function updateProgressDisplay() {
+  const completedLessons = progress.completedLessons.length;
+  const hasCompletedDailyLesson = progress.completedLessons.includes("citacao");
+  const progressFill = document.querySelector("#daily-progress-fill");
+  const progressLabel = document.querySelector("#daily-progress-label");
+  const startLessonButton = document.querySelector("#start-lesson-button");
+
+  document.querySelector("#lessons-count").textContent = completedLessons;
+  document.querySelector("#streak-count").textContent = progress.streakDays;
+  document.querySelector(".streak-counter").setAttribute(
+    "aria-label",
+    `${progress.streakDays} dias seguidos de estudo`,
+  );
+  progressFill.style.width = hasCompletedDailyLesson ? "100%" : "0%";
+  progressLabel.textContent = hasCompletedDailyLesson ? "1 de 1" : "0 de 1";
+
+  const buttonLabel = document.createTextNode(
+    hasCompletedDailyLesson ? "Revisar lição " : "Começar lição ",
+  );
+  const buttonArrow = document.createElement("span");
+  buttonArrow.setAttribute("aria-hidden", "true");
+  buttonArrow.textContent = hasCompletedDailyLesson ? "↻" : "→";
+  startLessonButton.replaceChildren(buttonLabel, buttonArrow);
+
+  saveProgress();
+}
+
+function resetAnswerState() {
+  selectedAnswerIndex = null;
+  finishLessonButton.disabled = true;
+  answerFeedback.textContent = "";
+  answerFeedback.classList.remove("is-error");
+
+  answerOptions.forEach((option) => {
+    option.classList.remove("is-correct", "is-incorrect");
+  });
+}
+
+function openLesson(lessonId) {
+  const lesson = lessonContent[lessonId];
+
+  if (!lesson) return;
+
+  activeLessonId = lessonId;
+  lessonTitle.textContent = lesson.title;
+  questionLegend.textContent = lesson.question;
+  resetAnswerState();
+
+  answerOptions.forEach((option, index) => {
+    const letter = String.fromCharCode(65 + index);
+    option.dataset.correct = String(index === lesson.correctAnswer);
+    option.replaceChildren();
+
+    const answerLetter = document.createElement("span");
+    answerLetter.className = "answer-letter";
+    answerLetter.textContent = letter;
+
+    option.append(answerLetter, document.createTextNode(lesson.answers[index]));
+  });
+
+  lessonDialog.showModal();
+}
+
+function showAnnouncement(message) {
+  window.clearTimeout(announcementTimeout);
+  announcement.textContent = message;
+  announcement.classList.add("is-visible");
+
+  announcementTimeout = window.setTimeout(() => {
+    announcement.classList.remove("is-visible");
+  }, 3200);
+}
+
+document.querySelectorAll("[data-open-lesson]").forEach((button) => {
   button.addEventListener("click", () => {
-    currentLesson = button.dataset.lesson;
-    document.querySelector("#dialog-title").textContent = lessonTitles[currentLesson] || lessonTitles.citacao;
-    dialog.showModal();
-    answeredCorrectly = false;
-    finishButton.disabled = true;
-    feedback.textContent = "";
-    feedback.className = "quiz-feedback";
-    document.querySelectorAll(".quiz-option").forEach((option) => option.classList.remove("selected", "correct", "incorrect"));
+    openLesson(button.dataset.openLesson);
   });
 });
 
-document.querySelectorAll(".quiz-option").forEach((option) => {
+answerOptions.forEach((option, index) => {
   option.addEventListener("click", () => {
-    document.querySelectorAll(".quiz-option").forEach((item) => item.classList.remove("selected", "correct", "incorrect"));
-    option.classList.add("selected");
-    answeredCorrectly = option.dataset.correct === "true";
-    option.classList.add(answeredCorrectly ? "correct" : "incorrect");
-    feedback.textContent = answeredCorrectly
-      ? "Isso! A autoria e o ano ajudam o leitor a localizar a fonte."
-      : "Ainda não. Procure a alternativa que identifica quem escreveu a ideia e quando.";
-    feedback.classList.toggle("error", !answeredCorrectly);
-    finishButton.disabled = !answeredCorrectly;
+    const lesson = lessonContent[activeLessonId];
+    const isCorrect = index === lesson.correctAnswer;
+
+    selectedAnswerIndex = index;
+    answerOptions.forEach((answer) => {
+      answer.classList.remove("is-correct", "is-incorrect");
+    });
+
+    option.classList.add(isCorrect ? "is-correct" : "is-incorrect");
+    answerFeedback.textContent = isCorrect
+      ? lesson.correctFeedback
+      : lesson.incorrectFeedback;
+    answerFeedback.classList.toggle("is-error", !isCorrect);
+    finishLessonButton.disabled = !isCorrect;
   });
 });
 
-finishButton.addEventListener("click", () => {
-  if (!answeredCorrectly) return;
-  progress.points += 20;
-  progress.lessons += 1;
-  progress.weekly = Math.min(4, progress.weekly + 1);
-  updateProgress();
-  dialog.close();
-  const toast = document.querySelector(".toast");
-  toast.textContent = "Missão concluída! +20 pontos de estudo ✳";
-  toast.classList.add("show");
-  window.setTimeout(() => toast.classList.remove("show"), 3200);
+finishLessonButton.addEventListener("click", () => {
+  const lesson = lessonContent[activeLessonId];
+  const isAnswerCorrect = selectedAnswerIndex === lesson.correctAnswer;
+
+  if (!isAnswerCorrect) return;
+
+  const isNewLesson = !progress.completedLessons.includes(activeLessonId);
+
+  if (isNewLesson) {
+    progress.completedLessons.push(activeLessonId);
+    updateProgressDisplay();
+  }
+
+  lessonDialog.close();
+  showAnnouncement(isNewLesson ? "Lição concluída! Mandou bem! ✦" : "Lição revisada. Continue assim! ✦");
 });
 
-document.querySelector(".help-button").addEventListener("click", () => {
-  const toast = document.querySelector(".toast");
-  toast.textContent = "Escolha uma trilha ou comece pela missão do dia.";
-  toast.classList.add("show");
-  window.setTimeout(() => toast.classList.remove("show"), 3200);
+document.querySelector("#close-dialog-button").addEventListener("click", () => {
+  lessonDialog.close();
 });
 
-document.querySelector(".bottom-note button").addEventListener("click", (event) => {
-  event.currentTarget.closest(".bottom-note").remove();
-});
-
-document.querySelectorAll(".nav-link").forEach((link) => {
-  link.addEventListener("click", () => {
-    document.querySelectorAll(".nav-link").forEach((item) => item.classList.remove("active"));
-    link.classList.add("active");
-  });
-});
+updateProgressDisplay();
