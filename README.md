@@ -16,3 +16,6 @@ Abra `index.html` em um navegador. A versão inicial é estática e não exige i
 ## Escopo inicial
 
 A interface apresenta trilhas de aprendizagem, missão do dia e uma lição demonstrativa de citações. O conteúdo de normas é introdutório e deve ser revisado com fontes oficiais e orientação docente antes de ser usado como referência normativa.
+
+
+Projeto feito com amor
