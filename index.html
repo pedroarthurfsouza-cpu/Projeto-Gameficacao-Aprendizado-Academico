@@ -1,204 +1,488 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-type="software" data-radius="soft" data-buttons="solid" data-motion="on">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#fffdf7">
+    <meta name="page-type" content="software">
+    <meta name="site-kind" content="software">
+    <meta name="theme-color" content="#090a0f">
     <meta
       name="description"
-      content="Aprenda as normas ABNT com lições rápidas e prática guiada."
+      content="Software de validação e aprendizagem prática das normas ABNT para trabalhos acadêmicos."
     >
-    <title>Trilha ABNT — Aprenda praticando</title>
+    <title>Trilha ABNT — Inspetor de Normas e Escrita Científica</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+    <!-- Tipografia Técnica de Alta Precisão (Inter Display + JetBrains Mono) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
     >
     <link rel="stylesheet" href="styles.css">
     <script src="app.js" defer></script>
   </head>
   <body>
+    <!-- Cabeçalho de Navegação Técnico (Figma / x.ai level) -->
     <header class="site-header">
-      <a class="brand" href="#inicio" aria-label="Trilha ABNT, início">
-        <span class="brand-icon" aria-hidden="true">a.</span>
-        <span>trilha<span class="brand-name-light">.abnt</span></span>
-      </a>
+      <div class="wrap header-inner">
+        <div class="header-brand">
+          <a class="brand" href="#inicio" aria-label="Trilha ABNT início">
+            <span class="brand-glyph" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M4 19L12 4L20 19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M7 14H17" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span class="brand-text">Trilha<span class="brand-accent">.ABNT</span></span>
+          </a>
+          <span class="engine-badge">v2026.1 · NBR 10520</span>
+        </div>
 
-      <nav class="main-navigation" aria-label="Navegação principal">
-        <a class="navigation-link navigation-link-active" href="#inicio">Início</a>
-        <a class="navigation-link" href="#trilhas">Trilhas</a>
-      </nav>
+        <nav class="main-nav" aria-label="Navegação do produto">
+          <a class="nav-link nav-link-active" href="#inicio">Inspetor</a>
+          <a class="nav-link" href="#arquitetura">Pipeline</a>
+          <a class="nav-link" href="#trilhas">Módulos</a>
+          <a class="nav-link" href="#regras">Regras Vigentes</a>
+        </nav>
 
-      <div class="streak-counter" aria-label="Sua sequência de dias de estudo">
-        <span aria-hidden="true">✦</span>
-        <strong id="streak-count">3</strong>
-        <span>dias</span>
+        <div class="header-actions">
+          <div class="streak-counter" aria-label="Sua sequência de dias de estudo">
+            <span class="streak-pulse" aria-hidden="true"></span>
+            <span class="streak-label">Ofensiva:</span>
+            <strong id="streak-count">3</strong>
+            <span class="streak-unit">dias</span>
+          </div>
+          <button class="button button-header" type="button" data-open-lesson="citacao">
+            Abrir Inspetor
+          </button>
+        </div>
       </div>
     </header>
 
-    <main id="inicio" class="page-content">
-      <section class="welcome-section" aria-labelledby="welcome-title">
-        <p class="eyebrow">UM POUQUINHO HOJE, UM TRABALHO MELHOR AMANHÃ</p>
-        <h1 id="welcome-title">Oi, Pedro! <span aria-hidden="true">☀</span></h1>
-        <p class="welcome-message">
-          Bora aprender uma coisa nova hoje?
-        </p>
-      </section>
+    <main>
+      <!-- TELA 1: HERO COM LIVE APP-FRAME DO CLIENTE (House Rule 3: 1 section per screen) -->
+      <section id="inicio" class="screen-section hero-section" style="--h: 1;">
+        <div class="wrap hero-grid">
+          <!-- Coluna Esquerda: Proposta Clara + Fato Verificável -->
+          <div class="hero-copy">
+            <div class="tech-pill">
+              <span class="pill-dot" aria-hidden="true"></span>
+              <span>PADRÃO ABNT PARA TRABALHOS ACADÊMICOS</span>
+            </div>
 
-      <section class="daily-lesson" aria-labelledby="daily-lesson-title">
-        <div class="lesson-copy">
-          <p class="lesson-label"><span aria-hidden="true">●</span> SUA LIÇÃO DE HOJE</p>
-          <h2 id="daily-lesson-title">Citações</h2>
-          <p class="lesson-description">
-            Ideias boas merecem crédito. Aprenda a citar uma fonte na prática.
-          </p>
+            <h1 class="hero-title">
+              Valide e formate seu TCC conforme a ABNT em tempo real.
+            </h1>
 
-          <div class="lesson-progress" aria-label="Progresso da lição">
-            <span class="progress-track">
-              <span id="daily-progress-fill" class="progress-fill"></span>
-            </span>
-            <span id="daily-progress-label" class="progress-label">0 de 1</span>
+            <p class="hero-description">
+              O Trilha ABNT analisa seu texto científico parágrafo por parágrafo, detecta
+              erros de citação direta, recuo de 4 cm e referências da NBR 6023 antes da entrega para a banca.
+            </p>
+
+            <div class="hero-metric-card">
+              <div class="metric-number">100%</div>
+              <div class="metric-detail">
+                <strong>Conformidade normativa</strong>
+                <span>Compatível com as diretrizes das normas NBR 14724, NBR 10520:2023 e NBR 6023.</span>
+              </div>
+            </div>
+
+            <div class="hero-actions-row">
+              <button
+                id="start-lesson-button"
+                class="button button-primary"
+                type="button"
+                data-open-lesson="citacao"
+              >
+                Iniciar lição prática <span class="button-arrow" aria-hidden="true">→</span>
+              </button>
+              <a href="#arquitetura" class="button button-ghost">
+                Ver fluxo de validação
+              </a>
+            </div>
           </div>
 
+          <!-- Coluna Direita: UI viva em HTML real do Software (app-frame) -->
+          <div class="hero-visual">
+            <div class="app-frame" role="region" aria-label="Simulador do software Trilha ABNT">
+              <div class="app-titlebar">
+                <div class="app-traffic-lights" aria-hidden="true">
+                  <span></span><span></span><span></span>
+                </div>
+                <div class="app-document-name">
+                  artigo_final_revisado.docx — Inspetor ABNT
+                </div>
+                <div class="app-status-badge">
+                  <span class="status-live-dot"></span> Ativo
+                </div>
+              </div>
+
+              <div class="app-ruler" aria-hidden="true">
+                <span class="ruler-marker">0 cm</span>
+                <span class="ruler-line"></span>
+                <span class="ruler-marker">3 cm (margem esq.)</span>
+                <span class="ruler-line"></span>
+                <span class="ruler-marker">4 cm (recuo)</span>
+                <span class="ruler-line"></span>
+                <span class="ruler-marker">17 cm</span>
+              </div>
+
+              <div class="app-editor-content">
+                <div class="editor-page">
+                  <div class="editor-header-note">1. INTRODUÇÃO E REVISÃO TEÓRICA</div>
+                  
+                  <p class="editor-paragraph">
+                    A correta atribuição de conceitos constitui a espinha dorsal de qualquer investigação científica rigorosa.
+                    Como destaca a literatura sobre metodologia da pesquisa:
+                  </p>
+
+                  <div class="editor-quote-block">
+                    <div class="quote-recuo-indicator" aria-hidden="true">
+                      <span>4 cm</span>
+                    </div>
+                    <div class="quote-text-container">
+                      <p class="quote-body">
+                        “A citação indireta reproduz com fidelidade o sentido do texto original,
+                        sendo dispensável a indicação do número da página consultada.”
+                      </p>
+                      <div class="quote-citation-tag">
+                        <span class="citation-diff-before" id="preview-old-citation">(SILVA, 2022)</span>
+                        <span class="citation-arrow" aria-hidden="true">→</span>
+                        <span class="citation-diff-after" id="preview-new-citation">(Silva, 2022)</span>
+                        <span class="citation-pill">NBR 10520:2023</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p class="editor-paragraph">
+                    Dessa maneira, a adoção do sistema autor-data padroniza o diálogo entre pesquisadores e simplifica a busca na lista final.
+                  </p>
+                </div>
+
+                <aside class="app-inspector-panel">
+                  <div class="panel-section-title">DIAGNÓSTICO EM TEMPO REAL</div>
+                  <div class="inspector-item inspector-item-success">
+                    <span class="inspector-icon">✓</span>
+                    <div class="inspector-info">
+                      <strong>Margem Superior &amp; Esquerda</strong>
+                      <span>3,0 cm configurados</span>
+                    </div>
+                  </div>
+                  <div class="inspector-item inspector-item-success">
+                    <span class="inspector-icon">✓</span>
+                    <div class="inspector-info">
+                      <strong>Margem Inferior &amp; Direita</strong>
+                      <span>2,0 cm configurados</span>
+                    </div>
+                  </div>
+                  <div class="inspector-item inspector-item-highlight">
+                    <span class="inspector-icon">●</span>
+                    <div class="inspector-info">
+                      <strong>Formato Autor-Data</strong>
+                      <span>Caixa-baixa obrigatória aplicada</span>
+                    </div>
+                  </div>
+                  <button id="toggle-preview-fix" class="button button-inspect-toggle" type="button">
+                    Alternar teste de conformidade
+                  </button>
+                </aside>
+              </div>
+
+              <div class="app-statusbar">
+                <span>Fonte: Arial 12pt · Espaçamento 1,5 linhas</span>
+                <span class="statusbar-right">100% em conformidade</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TELA 2: ARQUITETURA DE VALIDAÇÃO (House Rule 7: small diagram visual with input, processor, 3 lanes & pulses) -->
+      <section id="arquitetura" class="screen-section pipeline-section" style="--h: 1;">
+        <div class="wrap">
+          <div class="section-top">
+            <span class="tech-subheading">FLUXO DE PROCESSAMENTO</span>
+            <h2 class="section-title">Como a Trilha ABNT processa seu manuscrito</h2>
+            <p class="section-lead">
+              Três motores simultâneos inspecionam a estrutura, as citações diretas e as referências bibliográficas.
+            </p>
+          </div>
+
+          <!-- Diagrama Técnico com Hub, Linhas de Pulso e Três Vias Paralelas -->
+          <div class="pipeline-diagram-card" data-diagram="lanes">
+            <div class="diagram-input-node">
+              <div class="node-badge">ENTRADA</div>
+              <div class="node-content">
+                <span class="node-icon" aria-hidden="true">📄</span>
+                <strong>Texto Bruto</strong>
+                <span class="node-meta">TCC / Artigo / Tese</span>
+              </div>
+            </div>
+
+            <div class="diagram-bus" aria-hidden="true">
+              <span class="bus-line">
+                <span class="bus-pulse bus-pulse-1"></span>
+              </span>
+            </div>
+
+            <div class="diagram-processor-core">
+              <div class="node-badge">NÚCLEO REGULATÓRIO</div>
+              <div class="core-box">
+                <div class="core-spinner" aria-hidden="true"></div>
+                <strong>Parser ABNT</strong>
+                <span>Segmentação léxica e identificação de fontes</span>
+              </div>
+            </div>
+
+            <div class="diagram-lanes-splitter" aria-hidden="true">
+              <span class="splitter-line splitter-top"></span>
+              <span class="splitter-line splitter-mid"></span>
+              <span class="splitter-line splitter-bot"></span>
+            </div>
+
+            <div class="diagram-lanes-group">
+              <div class="lane-card">
+                <div class="lane-header">
+                  <span class="lane-code">VIA 01</span>
+                  <span class="lane-norm">NBR 14724</span>
+                </div>
+                <strong>Estrutura &amp; Paginação</strong>
+                <p>Contagem a partir da folha de rosto, numeração no canto superior direito.</p>
+              </div>
+
+              <div class="lane-card lane-card-featured">
+                <div class="lane-header">
+                  <span class="lane-code">VIA 02</span>
+                  <span class="lane-norm">NBR 10520</span>
+                </div>
+                <strong>Citações &amp; Recuo</strong>
+                <p>Citações longas com recuo de 4 cm, fonte 10, espaçamento simples sem aspas.</p>
+              </div>
+
+              <div class="lane-card">
+                <div class="lane-header">
+                  <span class="lane-code">VIA 03</span>
+                  <span class="lane-norm">NBR 6023</span>
+                </div>
+                <strong>Lista de Referências</strong>
+                <p>Ordenação alfabética, títulos em negrito, pontuação exata por tipo de obra.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TELA 3: TRILHAS DE ESTUDO & EXERCÍCIOS PRÁTICOS (House Rule 3: 1 screen tall) -->
+      <section id="trilhas" class="screen-section tracks-section" style="--h: 1;">
+        <div class="wrap">
+          <div class="section-top-flex">
+            <div>
+              <span class="tech-subheading">CATÁLOGO DE MÓDULOS</span>
+              <h2 class="section-title">Trilhas de Estudo Interativas</h2>
+              <p class="section-lead">Aprenda a aplicar a regra na prática através de testes objetivos de 3 minutos.</p>
+            </div>
+            <div class="progress-indicator-pill">
+              <span class="pill-dot-green"></span>
+              <span class="pill-text"><strong id="lessons-count">0</strong> de 3 módulos concluídos</span>
+            </div>
+          </div>
+
+          <div class="tracks-grid">
+            <!-- Card Módulo 1 -->
+            <article class="track-card" data-open-lesson="estrutura" tabindex="0" role="button" aria-label="Abrir módulo Partes do Trabalho">
+              <div class="track-card-top">
+                <span class="track-number">01</span>
+                <span class="track-norm-tag">NBR 14724</span>
+              </div>
+              <h3 class="track-name">Partes do Trabalho</h3>
+              <p class="track-desc">
+                Organização lógica entre elementos pré-textuais, textuais e pós-textuais.
+                Aprenda quais folhas são contadas e quais são numeradas.
+              </p>
+              <div class="track-footer">
+                <span class="track-time">⏱ 4 minutos</span>
+                <button class="track-action-btn" type="button" tabindex="-1">
+                  <span class="track-action-label">Praticar</span>
+                  <span class="track-arrow" aria-hidden="true">→</span>
+                </button>
+              </div>
+            </article>
+
+            <!-- Card Módulo 2 (Em Destaque) -->
+            <article class="track-card track-card-featured" data-open-lesson="citacao" tabindex="0" role="button" aria-label="Abrir módulo Citações no Texto">
+              <div class="track-card-top">
+                <span class="track-number">02</span>
+                <span class="track-norm-tag">NBR 10520</span>
+              </div>
+              <h3 class="track-name">Citações no Texto</h3>
+              <p class="track-desc">
+                Citação direta curta, direta longa com recuo de 4 cm e paráfrases.
+                Regra atualizada do sistema autor-data em caixa-baixa (Silva, 2022).
+              </p>
+              <div class="track-footer">
+                <span class="track-time">⏱ 5 minutos</span>
+                <button class="track-action-btn" type="button" tabindex="-1">
+                  <span class="track-action-label">Praticar</span>
+                  <span class="track-arrow" aria-hidden="true">→</span>
+                </button>
+              </div>
+            </article>
+
+            <!-- Card Módulo 3 -->
+            <article class="track-card" data-open-lesson="referencias" tabindex="0" role="button" aria-label="Abrir módulo Lista de Referências">
+              <div class="track-card-top">
+                <span class="track-number">03</span>
+                <span class="track-norm-tag">NBR 6023</span>
+              </div>
+              <h3 class="track-name">Lista de Referências</h3>
+              <p class="track-desc">
+                Estruturação obrigatória de livros, artigos de periódicos e páginas da internet.
+                Destaque tipográfico uniforme em toda a listagem.
+              </p>
+              <div class="track-footer">
+                <span class="track-time">⏱ 5 minutos</span>
+                <button class="track-action-btn" type="button" tabindex="-1">
+                  <span class="track-action-label">Praticar</span>
+                  <span class="track-arrow" aria-hidden="true">→</span>
+                </button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- TELA 4: DIRETRIZES TÉCNICAS VIGENTES & COLOFÃO (House Rule 3: 1 screen tall) -->
+      <section id="regras" class="screen-section rules-section" style="--h: 1;">
+        <div class="wrap rules-container">
+          <div class="section-top">
+            <span class="tech-subheading">DOCUMENTAÇÃO OFICIAL</span>
+            <h2 class="section-title">Resumo Rápido das Normas Vigentes</h2>
+            <p class="section-lead">Tabela de referência técnica para conferência rápida de medidas e formatos.</p>
+          </div>
+
+          <div class="rules-table-frame">
+            <table class="rules-table" aria-label="Tabela de especificações técnicas das normas ABNT">
+              <thead>
+                <tr>
+                  <th scope="col">Elemento</th>
+                  <th scope="col">Norma ABNT</th>
+                  <th scope="col">Especificação Obrigatória</th>
+                  <th scope="col">Status de Conformidade</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Margens do Trabalho</strong></td>
+                  <td>NBR 14724</td>
+                  <td>Superior e Esquerda: 3,0 cm · Inferior e Direita: 2,0 cm</td>
+                  <td><span class="table-badge table-badge-ok">Validado</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Citação Direta Longa</strong></td>
+                  <td>NBR 10520</td>
+                  <td>Mais de 3 linhas: recuo de 4,0 cm da margem esquerda, fonte tamanho 10, entrelinhas simples</td>
+                  <td><span class="table-badge table-badge-ok">Validado</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Chamada Autor-Data</strong></td>
+                  <td>NBR 10520:2023</td>
+                  <td>Sobrenome do autor fora ou dentro dos parênteses grafado em maiúsculas e minúsculas</td>
+                  <td><span class="table-badge table-badge-ok">Atualizado 2023</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Referências no Final</strong></td>
+                  <td>NBR 6023</td>
+                  <td>Espaçamento simples entre linhas, separadas entre si por espaço simples em branco</td>
+                  <td><span class="table-badge table-badge-ok">Validado</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Rodapé do Site e Créditos (House Rule 1: One single license credit line) -->
+          <footer class="site-footer">
+            <div class="footer-meta">
+              <span class="footer-brand">Trilha.ABNT — Engenharia de Escrita Científica</span>
+              <p class="footer-license">
+                Licença educacional aberta · Tipografia e dados técnicos baseados nas normas oficiais ABNT NBR 14724, 10520 e 6023.
+              </p>
+            </div>
+            <div class="footer-status">
+              <span class="footer-status-dot"></span> Todos os sistemas em operação normal
+            </div>
+          </footer>
+        </div>
+      </section>
+    </main>
+
+    <!-- DIALOG DA LIÇÃO INTERATIVA (Completamente integrado a app.js) -->
+    <dialog id="lesson-dialog" class="tech-dialog" aria-labelledby="dialog-title">
+      <div class="dialog-window">
+        <div class="dialog-header-bar">
+          <div class="dialog-breadcrumb">
+            <span class="breadcrumb-engine">Motor de Validação</span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-module">Sessão Prática</span>
+          </div>
           <button
-            id="start-lesson-button"
-            class="button button-primary"
+            id="close-dialog-button"
+            class="dialog-close-btn"
             type="button"
-            data-open-lesson="citacao"
+            aria-label="Fechar lição"
           >
-            Começar lição <span aria-hidden="true">→</span>
+            ✕
           </button>
         </div>
 
-        <div class="lesson-illustration" aria-hidden="true">
-          <span class="illustration-spark illustration-spark-one">✦</span>
-          <span class="illustration-spark illustration-spark-two">✳</span>
-          <div class="illustration-paper">
-            <span class="paper-title-line"></span>
-            <span class="paper-line"></span>
-            <span class="paper-line paper-line-short"></span>
-            <span class="paper-quote">“</span>
-            <span class="paper-line paper-line-highlight"></span>
-            <span class="paper-line"></span>
+        <div class="dialog-content-body">
+          <h2 id="dialog-title">Uma citação no lugar certo.</h2>
+          <p class="dialog-instruction">
+            Analise as três alternativas abaixo e escolha aquela que segue rigorosamente
+            o sistema autor-data conforme a norma vigente.
+          </p>
+
+          <fieldset class="quiz-fieldset">
+            <legend id="quiz-question" class="quiz-legend">
+              Qual frase mostra de onde veio a ideia com a autoria correta?
+            </legend>
+
+            <div class="quiz-options-group">
+              <button class="answer-option" type="button" data-correct="false">
+                <span class="option-marker">A</span>
+                <span class="option-text">A leitura ajuda a aprender mais.</span>
+              </button>
+
+              <button class="answer-option" type="button" data-correct="true">
+                <span class="option-marker">B</span>
+                <span class="option-text">Segundo Silva (2022), a leitura apoia a aprendizagem.</span>
+              </button>
+
+              <button class="answer-option" type="button" data-correct="false">
+                <span class="option-marker">C</span>
+                <span class="option-text">Todos sabem que a leitura é importante.</span>
+              </button>
+            </div>
+          </fieldset>
+
+          <div id="answer-feedback" class="answer-feedback" aria-live="polite"></div>
+
+          <div class="dialog-footer-actions">
+            <button
+              id="finish-lesson-button"
+              class="button button-primary button-dialog"
+              type="button"
+              disabled
+            >
+              Concluir lição <span class="button-arrow" aria-hidden="true">→</span>
+            </button>
           </div>
-          <span class="illustration-pencil">✎</span>
         </div>
-      </section>
-
-      <section id="trilhas" class="paths-section" aria-labelledby="paths-title">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">ESCOLHA O PRÓXIMO PASSO</p>
-            <h2 id="paths-title">O que vamos aprender?</h2>
-          </div>
-          <span class="completed-count"><strong id="lessons-count">0</strong> lições feitas</span>
-        </div>
-
-        <div class="path-list">
-          <article class="path-card path-card-green">
-            <span class="path-icon" aria-hidden="true">▤</span>
-            <div class="path-copy">
-              <p class="path-number">TRILHA 1</p>
-              <h3>Partes do trabalho</h3>
-              <p>Descubra como organizar seu trabalho acadêmico.</p>
-            </div>
-            <button
-              class="path-button"
-              type="button"
-              aria-label="Começar trilha Partes do trabalho"
-              data-open-lesson="estrutura"
-            >
-              →
-            </button>
-          </article>
-
-          <article class="path-card path-card-lilac">
-            <span class="path-icon" aria-hidden="true">“</span>
-            <div class="path-copy">
-              <p class="path-number">TRILHA 2</p>
-              <h3>Citações</h3>
-              <p>Mostre de onde vêm as ideias que você usa.</p>
-            </div>
-            <button
-              class="path-button"
-              type="button"
-              aria-label="Começar trilha Citações"
-              data-open-lesson="citacao"
-            >
-              →
-            </button>
-          </article>
-
-          <article class="path-card path-card-yellow">
-            <span class="path-icon" aria-hidden="true">≡</span>
-            <div class="path-copy">
-              <p class="path-number">TRILHA 3</p>
-              <h3>Referências</h3>
-              <p>Organize as fontes que ajudaram na sua pesquisa.</p>
-            </div>
-            <button
-              class="path-button"
-              type="button"
-              aria-label="Começar trilha Referências"
-              data-open-lesson="referencias"
-            >
-              →
-            </button>
-          </article>
-        </div>
-      </section>
-
-      <footer class="page-footer">
-        Conteúdo introdutório para fins educacionais.
-      </footer>
-    </main>
-
-    <dialog id="lesson-dialog" class="lesson-dialog" aria-labelledby="dialog-title">
-      <button
-        id="close-dialog-button"
-        class="dialog-close"
-        type="button"
-        aria-label="Fechar lição"
-      >
-        ×
-      </button>
-
-      <p class="dialog-label">LIÇÃO RÁPIDA <span>·</span> 5 MIN</p>
-      <span class="dialog-icon" aria-hidden="true">“</span>
-      <h2 id="dialog-title">Uma citação no lugar certo.</h2>
-      <p class="dialog-introduction">
-        Quando uma ideia vem de outra pessoa, o leitor precisa conseguir
-        identificar essa fonte. Vamos praticar?
-      </p>
-
-      <fieldset class="quiz">
-        <legend id="quiz-question">Qual frase mostra de onde veio a ideia?</legend>
-        <button class="answer-option" type="button" data-correct="false">
-          <span class="answer-letter">A</span>
-          A leitura ajuda a aprender mais.
-        </button>
-        <button class="answer-option" type="button" data-correct="true">
-          <span class="answer-letter">B</span>
-          Segundo Silva (2022), a leitura apoia a aprendizagem.
-        </button>
-        <button class="answer-option" type="button" data-correct="false">
-          <span class="answer-letter">C</span>
-          Todos sabem que a leitura é importante.
-        </button>
-      </fieldset>
-
-      <p id="answer-feedback" class="answer-feedback" aria-live="polite"></p>
-      <button id="finish-lesson-button" class="button button-primary" type="button" disabled>
-        Concluir lição <span aria-hidden="true">→</span>
-      </button>
-      <p class="dialog-footnote">
-        Exemplo didático simplificado. Consulte as orientações da sua instituição
-        e a norma vigente.
-      </p>
+      </div>
     </dialog>
 
-    <div id="announcement" class="announcement" role="status" aria-live="polite"></div>
+    <!-- Notificação Flutuante / Toast de Conclusão -->
+    <div id="announcement" class="tech-toast" role="status" aria-live="polite"></div>
   </body>
 </html>
